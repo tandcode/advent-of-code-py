@@ -17,34 +17,29 @@ def calc_all_zeros(inp, calc_fn) -> int:
     position = 50
     zero_count = 0
     for op in lines:
-        append_v, new_pos = calc_fn(op, position)
+        sign = 1 if op[0] == "R" else -1
+        value = int(op[1:])
+        new_pos_raw = (position + (value * sign))
+        new_pos = new_pos_raw % up_to
+        if new_pos < 0:
+            new_pos = up_to + new_pos
+        zeros = calc_fn(position, new_pos_raw)
         position = new_pos
-        zero_count += append_v
+        zero_count += zeros
     return zero_count
 
 
-def calc_zeros1(op: str, position: int) -> tuple[int, int]:
-    sign = 1 if op[0] == "R" else -1
-    value = int(op[1:])
-    new_pos_raw = (position + (value * sign))
-    new_pos = new_pos_raw % up_to
-    if new_pos < 0:
-        new_pos = up_to + new_pos
-    zeros = 1 if position == 0 else 0
-    return zeros, new_pos
+def calc_zeros1(*args) -> int:
+    position = args[0]
+    return 1 if position == 0 else 0
 
-
-def calc_zeros2(op: str, position: int) -> tuple[int, int]:
-    sign = 1 if op[0] == "R" else -1
-    value = int(op[1:])
-    new_pos_raw = (position + (value * sign))
-    new_pos = new_pos_raw % up_to
-    if new_pos < 0:
-        new_pos = up_to + new_pos
+def calc_zeros2(*args) -> int:
+    position = args[0]
+    new_pos_raw = args[1]
     zeros = abs(new_pos_raw) // up_to
     if new_pos_raw == 0 or new_pos_raw < 0 < position:
         zeros += 1
-    return zeros, new_pos
+    return zeros
 
 
 if __name__ == "__main__":
