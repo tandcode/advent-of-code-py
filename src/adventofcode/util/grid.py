@@ -1,7 +1,18 @@
+import re
+
+
 class Grid:
 
-    def __init__(self, inp):
-        self.grid = [list(line.strip()) for line in inp.split('\n') if line.strip()]
+    def __init__(self, inp, ignore_spaces=False, strip_lines=True):
+        self.ignore_spaces = ignore_spaces
+        self.strip_lines = strip_lines
+        self.grid = [self.parse_line(line) for line in inp.split('\n') if line.strip()]
+
+    def parse_line(self, line: str) -> list:
+        line_formated = line.strip() if self.strip_lines else line
+        if self.ignore_spaces:
+            return re.split(r'\s+', line_formated)
+        return list(line_formated)
 
     def contains(self, *args) -> bool:
         match args:
@@ -20,6 +31,9 @@ class Grid:
             return self.grid[y][x]
         else:
             raise IndexError("Position out of range")
+
+    def cols(self) -> list[list]:
+        return [[self.grid[y][x] for y in range(len(self.grid))] for x in range(len(self.grid[0]))]
 
     def __setitem__(self, pos, value):
         if isinstance(pos, tuple) and len(pos) == 2:
